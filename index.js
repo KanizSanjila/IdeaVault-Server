@@ -65,18 +65,40 @@ async function run() {
     const userIdeaCollection = db.collection('userIdea');
 
        app.get('/course', async (req, res) => {
-        // console.log(req.query)
-        //  const { search } = req.query;
+        console.log(req.query)
+         const { search } = req.query;
          
-        //  let cursor;
-        //  if(search){
-        //    cursor = coursesCollection.find({title:{$regex:search, $options:'i'}})
-        //    res.send({})
-        //  }
-        //  else{
-        //    const cursor = coursesCollection.find();
-        //  }
-        const cursor = coursesCollection.find();
+         let cursor;
+         if(search){
+          //  cursor = coursesCollection.find({title:{
+          //   $regex:search,
+          //   $options:'i',
+          //  },});
+          //  console.log(cursor)
+
+         cursor = await coursesCollection.find({
+          $or: [
+            {
+              title: {
+                $regex: search,
+                $options: 'i',
+              },
+            },
+            {
+              category: {
+                $regex: search,
+                $options: 'i',
+              },
+            },
+          ],
+        });
+
+
+         }
+         else{
+           const cursor = coursesCollection.find();
+         }
+
         const result =await cursor.toArray();
         console.log(result)
         res.send(result)
@@ -108,6 +130,19 @@ async function run() {
         const result = await userIdeaCollection.insertOne(userIdea)
         res.json(result)
     });
+
+     app.patch('/ideas/:id',async (req, res) => {
+           const { id } = req.params;
+      const myIdeaData = req.body;
+      console.log(myIdeaData);
+
+      const result = await userIdeaCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: myIdeaData},
+      );
+
+      res.json(result);
+     });
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
