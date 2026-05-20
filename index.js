@@ -7,6 +7,7 @@ const port = process.env.PORT || 8080
 dotenv.config();
 const app = express()
 app.use(cors());
+app.use(express.json());
 
 
 const uri =process.env.MONGODB_URL;
@@ -61,6 +62,7 @@ async function run() {
 
         const db = client.db('databasedb');
     const coursesCollection = db.collection('collection');
+    const userIdeaCollection = db.collection('userIdea');
 
        app.get('/course', async (req, res) => {
         // console.log(req.query)
@@ -93,6 +95,18 @@ async function run() {
         const query = {_id: new ObjectId(dataId)}
         const result = await coursesCollection.findOne(query)
         res.send(result)
+    });
+
+    app.get('/ideas', async(req, res)=>{
+        const result = await userIdeaCollection.find().toArray()
+        res.json(result)
+    })
+
+    app.post('/ideas', async(req, res)=>{
+      const userIdea = req.body
+        console.log(userIdea)
+        const result = await userIdeaCollection.insertOne(userIdea)
+        res.json(result)
     });
 
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
