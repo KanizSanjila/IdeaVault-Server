@@ -64,16 +64,17 @@ async function run() {
 
        app.get('/course', async (req, res) => {
         // console.log(req.query)
-         const { search } = req.query;
+        //  const { search } = req.query;
          
-         let cursor;
-         if(search){
-           cursor = coursesCollection.find({title:{$eq:"BuildStream: Real-time Construction Analytics"}}).toArray()
-           res.send({})
-         }
-         else{
-           const cursor = coursesCollection.find();
-         }
+        //  let cursor;
+        //  if(search){
+        //    cursor = coursesCollection.find({title:{$regex:search, $options:'i'}})
+        //    res.send({})
+        //  }
+        //  else{
+        //    const cursor = coursesCollection.find();
+        //  }
+        const cursor = coursesCollection.find();
         const result =await cursor.toArray();
         console.log(result)
         res.send(result)
