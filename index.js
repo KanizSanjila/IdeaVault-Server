@@ -64,18 +64,18 @@ async function run() {
     const coursesCollection = db.collection('collection');
     const userIdeaCollection = db.collection('userIdea');
 
+    //    app.get('/course', async (req, res) => {
+    //     const cursor = coursesCollection.find()
+    //   const result = await cursor.toArray();
+    //   res.send(result);
+    //     res.send(result)
+    // });
        app.get('/course', async (req, res) => {
-        console.log(req.query)
+        // console.log(req.query)
          const { search } = req.query;
          
          let cursor;
          if(search){
-          //  cursor = coursesCollection.find({title:{
-          //   $regex:search,
-          //   $options:'i',
-          //  },});
-          //  console.log(cursor)
-
          cursor = await coursesCollection.find({
           $or: [
             {
@@ -92,15 +92,11 @@ async function run() {
             },
           ],
         });
-
-
          }
          else{
-           const cursor = coursesCollection.find();
+           cursor = coursesCollection.find();
          }
-
-        const result =await cursor.toArray();
-        console.log(result)
+      const result = await cursor.toArray();
         res.send(result)
     });
 
@@ -154,7 +150,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-  res.send('Hello kaniz sanjila')
+  res.send('Hello world')
 })
 
 app.listen(port, () => {
