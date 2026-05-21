@@ -70,35 +70,24 @@ async function run() {
     //   res.send(result);
     //     res.send(result)
     // });
-       app.get('/course', async (req, res) => {
-        // console.log(req.query)
-         const { search } = req.query;
-         
-         let cursor;
-         if(search){
-         cursor = await coursesCollection.find({
-          $or: [
-            {
-              title: {
-                $regex: search,
-                $options: 'i',
-              },
-            },
-            {
-              category: {
-                $regex: search,
-                $options: 'i',
-              },
-            },
-          ],
-        });
-         }
-         else{
-           cursor = coursesCollection.find();
-         }
-      const result = await cursor.toArray();
-        res.send(result)
-    });
+app.get('/course', async (req, res) => {
+
+  const { searchTerm, category } = req.query;
+
+  let query = {};
+
+  if (searchTerm) {
+    query.title = { $regex: searchTerm, $options: "i" };
+  }
+
+  if (category) {
+    query.category = category;
+  }
+
+  const result = await coursesCollection.find(query).toArray();
+
+  res.send(result);
+});
 
        app.get('/featured', async (req, res) => {
       const cursor = coursesCollection.find().limit(6);
